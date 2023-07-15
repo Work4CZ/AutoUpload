@@ -1,0 +1,5 @@
+[template]
+language = "google"
+args_section_enabled = true
+return_section_enabled = true
+raise_section_enabled = true

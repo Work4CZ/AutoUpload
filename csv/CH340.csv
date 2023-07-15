@@ -1,0 +1,2 @@
+﻿1,"print(""The var1"")",test,
+3,for i in var1 var2,"range($__import__(""random"").randrange(11)$)",:
