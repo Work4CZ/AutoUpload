@@ -16,7 +16,7 @@ class TUIHandler(logging.StreamHandler):
 
 class LoggerMetaclass(type):
     """
-    在生成类的时候生成一个类名作为参数的logger
+    生成类的时生成一个类名作为参数的logger
     """
 
     def __init__(cls, name, bases, attrs):
@@ -32,7 +32,7 @@ class Logger:
     """
 
     def __init__(self, class_name=None):
-        """初始化
+        """
 
         Args:
             class_name (str, optional): 发生错误的类名. Defaults to None.
@@ -97,3 +97,6 @@ class Logger:
                 raise e
 
         return wrapper
+
+
+pass

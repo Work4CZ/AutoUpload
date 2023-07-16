@@ -1,12 +1,14 @@
 import curses
 from typing import List, Union
+from Event import Event
+from Observer import Observer
 
 
 class RepeatCallError(Exception):
     pass
 
 
-class CommandLineInteractor():
+class CommandLineInteractor(Observer):
 
     def __init__(self):
         self._is_initialized = False
@@ -17,8 +19,12 @@ class CommandLineInteractor():
         self.error_line = self.height - 2
         self.input_line = self.height - 1
 
-        self.status_line = self.height - 3
+        # 从下到上
+        # 状态提示行：工作中，请拔出旧设备，请插入新设备.
+        # 当前设备
 
+        self.status_line = self.height - 3
+        self.device_line = self.height - 4
         self.display_message(self.static_cursor, "-" * self.width)
         self.static_cursor += 1
 
@@ -34,6 +40,23 @@ class CommandLineInteractor():
 
     def __del__(self):
         curses.endwin()
+
+    def update(self, event: Event):
+        """
+        It must be ensured that event.label matches the function name.
+        Add an explicit check in Event.
+
+        Args:
+            event (Event): event.label作为动作函数名
+        """
+
+        def device_changes(device_dict: dict = event.data) -> str:
+            behavior = str((key for key in device_dict).__next__())
+            device = list(device_dict.values())[0]
+            self.display_dynamic_info(self.device_line,
+                                      behavior + device.description)
+
+        getattr(self.update, event.label)()
 
     def get_input(self, prompt: str = None) -> str:
         # Print the prompt at the bottom of the screen
@@ -68,9 +91,9 @@ class CommandLineInteractor():
                 "display_static_prompt accepts only list[str] and str as arguments"
             )
 
-    def display_dynamic_info(self, info: str):
+    def display_dynamic_info(self, line, info: str):
         # Display the dynamic info in the middle of the screen
-        self.display_message(self.status_line, info)
+        self.display_message(line, info)
 
     def report_error(self, error):
         # Display the error message in the middle of the screen
